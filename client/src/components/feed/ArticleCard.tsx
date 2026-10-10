@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Bookmark, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import type { Article } from '@/services/api';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+
+const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+  TECH: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
+  SCIENCE: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80',
+  SPORTS: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80',
+  ENTERTAINMENT: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80',
+  BUSINESS: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80',
+  DEFAULT: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=600&q=80',
+};
 
 interface ArticleCardProps {
   article: Article;
@@ -20,28 +29,31 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   onSummarize,
   onRead,
 }) => {
+  const fallbackUrl =
+    CATEGORY_FALLBACK_IMAGES[article.category.toUpperCase()] || CATEGORY_FALLBACK_IMAGES.DEFAULT;
+
+  const [imageSrc, setImageSrc] = useState<string>(article.imageUrl || fallbackUrl);
+
   const timeAgo = article.publishedAt
     ? formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })
     : 'Recently';
 
   return (
     <div className="group flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+      {/* Aspect Ratio Image Container */}
       <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-        {article.imageUrl ? (
-          <img
-            src={article.imageUrl}
-            alt={article.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            onError={(e) => {
-              (e.target as HTMLElement).style.display = 'none';
-            }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-slate-400 bg-slate-100 dark:bg-slate-800/80">
-            <BookOpen className="w-10 h-10 opacity-30" />
-          </div>
-        )}
+        <img
+          src={imageSrc}
+          alt={article.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={() => {
+            if (imageSrc !== fallbackUrl) {
+              setImageSrc(fallbackUrl);
+            }
+          }}
+        />
 
+        {/* Badges */}
         <div className="absolute top-3 left-3 flex items-center gap-2 flex-wrap">
           <Badge variant="default" className="bg-slate-950/80 backdrop-blur-md text-white dark:bg-slate-900/90 border border-white/10">
             {article.category}
@@ -51,6 +63,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           </Badge>
         </div>
 
+        {/* Bookmark Button */}
         <button
           onClick={() => onToggleBookmark?.(article.id)}
           className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer ${
@@ -64,6 +77,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
         </button>
       </div>
 
+      {/* Article Content */}
       <div className="flex-1 p-5 flex flex-col justify-between gap-4">
         <div className="space-y-2">
           <span className="text-xs font-medium text-slate-400">{timeAgo}</span>
@@ -77,6 +91,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           )}
         </div>
 
+        {/* Actions */}
         <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
           <Button
             variant="outline"
