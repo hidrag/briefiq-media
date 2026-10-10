@@ -23,6 +23,7 @@ export class GNewsProvider implements NewsProvider {
   name = 'GNewsProvider';
 
   private categoryMap: Record<Category, string> = {
+    [Category.GENERAL]: 'general',
     [Category.TECH]: 'technology',
     [Category.SCIENCE]: 'science',
     [Category.SPORTS]: 'sports',

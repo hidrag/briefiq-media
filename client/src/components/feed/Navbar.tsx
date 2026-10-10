@@ -1,23 +1,25 @@
 import React from 'react';
-import { Search, Bookmark, Newspaper } from 'lucide-react';
+import { Search, Bookmark, Newspaper, History } from 'lucide-react';
 import { usePreferencesStore } from '@/store/usePreferencesStore';
 import { useBookmarks } from '@/services/api';
 
 const CATEGORIES = [
   { id: 'ALL', label: 'All News' },
+  { id: 'GENERAL', label: 'India / General' },
   { id: 'TECH', label: 'Tech' },
   { id: 'SCIENCE', label: 'Science' },
   { id: 'SPORTS', label: 'Sports' },
   { id: 'CRICKET', label: 'Cricket 🏏' },
-  { id: 'ENTERTAINMENT', label: 'Entertainment' },
+  { id: 'ENTERTAINMENT', label: 'Entertainment 🎬' },
   { id: 'BUSINESS', label: 'Business' },
 ];
 
 interface NavbarProps {
   onOpenBookmarks?: () => void;
+  onOpenRecentlyViewed?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks, onOpenRecentlyViewed }) => {
   const { activeCategory, setActiveCategory, searchQuery, setSearchQuery, token } = usePreferencesStore();
   const { data: bookmarkData } = useBookmarks(token || undefined);
 
@@ -49,6 +51,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={onOpenRecentlyViewed}
+              className="p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-full transition-colors cursor-pointer"
+              title="Recently Viewed Articles"
+            >
+              <History className="w-5 h-5" />
+            </button>
+
             <button
               onClick={onOpenBookmarks}
               className="relative p-2.5 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900 rounded-full transition-colors cursor-pointer"

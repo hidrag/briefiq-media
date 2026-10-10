@@ -1,6 +1,10 @@
 import { Category } from '../types/news.js';
 
 export const CATEGORY_FEEDS: Record<Category, string[]> = {
+  [Category.GENERAL]: [
+    'https://feeds.feedburner.com/ndtvnews-top-stories',
+    'https://www.thehindu.com/news/national/feeder/default.rss',
+  ],
   [Category.TECH]: [
     'https://feeds.feedburner.com/TechCrunch/',
     'https://www.theverge.com/rss/index.xml',
@@ -21,6 +25,8 @@ export const CATEGORY_FEEDS: Record<Category, string[]> = {
   [Category.ENTERTAINMENT]: [
     'https://variety.com/feed/',
     'https://www.hollywoodreporter.com/feed/',
+    'https://www.bollywoodhungama.com/rss/news.xml',
+    'https://feeds.feedburner.com/ndtvmovies-latest',
   ],
   [Category.BUSINESS]: [
     'https://feeds.a.dj.com/rss/WSJcomUSBusiness.xml',
