@@ -13,6 +13,8 @@ export const CATEGORY_FEEDS: Record<Category, string[]> = {
   [Category.SPORTS]: [
     'https://www.espn.com/espn/rss/news',
     'https://api.foxsports.com/v1/rss?partnerKey=zBa1RvBcySp3atsA',
+  ],
+  [Category.CRICKET]: [
     'https://www.cricinfo.com/rss/content/story/feeds/0.xml',
     'https://feeds.feedburner.com/ndtvsports-cricket',
   ],

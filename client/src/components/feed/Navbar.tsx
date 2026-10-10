@@ -8,6 +8,7 @@ const CATEGORIES = [
   { id: 'TECH', label: 'Tech' },
   { id: 'SCIENCE', label: 'Science' },
   { id: 'SPORTS', label: 'Sports' },
+  { id: 'CRICKET', label: 'Cricket 🏏' },
   { id: 'ENTERTAINMENT', label: 'Entertainment' },
   { id: 'BUSINESS', label: 'Business' },
 ];
@@ -70,7 +71,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks }) => {
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all cursor-pointer ${
                 activeCategory === cat.id
-                  ? 'bg-blue-600 text-white shadow-sm'
+                  ? cat.id === 'CRICKET'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900'
               }`}
             >
