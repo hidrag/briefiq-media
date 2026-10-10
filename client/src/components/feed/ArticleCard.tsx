@@ -5,7 +5,8 @@ import type { Article } from '@/services/api';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
-const CATEGORY_FALLBACK_IMAGES: Record<string, string> = {
+const CATEGORY_FALLBACKS: Record<string, string> = {
+  CRICKET: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=600&q=80',
   TECH: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
   SCIENCE: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80',
   SPORTS: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=600&q=80',
@@ -29,33 +30,36 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
   onSummarize,
   onRead,
 }) => {
-  const fallbackUrl =
-    CATEGORY_FALLBACK_IMAGES[article.category.toUpperCase()] || CATEGORY_FALLBACK_IMAGES.DEFAULT;
+  const categoryKey = article.category ? article.category.toUpperCase() : 'DEFAULT';
+  const defaultFallback = CATEGORY_FALLBACKS[categoryKey] || CATEGORY_FALLBACKS.DEFAULT;
 
-  const [imageSrc, setImageSrc] = useState<string>(article.imageUrl || fallbackUrl);
+  const [imgSrc, setImgSrc] = useState<string>(article.imageUrl || defaultFallback);
 
   const timeAgo = article.publishedAt
     ? formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })
     : 'Recently';
 
+  const badgeVariant = categoryKey === 'CRICKET' ? 'success' : 'default';
+
   return (
     <div className="group flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-      {/* Aspect Ratio Image Container */}
+      {/* Aspect ratio container with Lazy Loading and onError Fallback */}
       <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         <img
-          src={imageSrc}
+          src={imgSrc}
           alt={article.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
           onError={() => {
-            if (imageSrc !== fallbackUrl) {
-              setImageSrc(fallbackUrl);
+            if (imgSrc !== defaultFallback) {
+              setImgSrc(defaultFallback);
             }
           }}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
         {/* Badges */}
         <div className="absolute top-3 left-3 flex items-center gap-2 flex-wrap">
-          <Badge variant="default" className="bg-slate-950/80 backdrop-blur-md text-white dark:bg-slate-900/90 border border-white/10">
+          <Badge variant={badgeVariant} className={categoryKey === 'CRICKET' ? 'bg-emerald-600 text-white' : 'bg-slate-950/80 backdrop-blur-md text-white border border-white/10'}>
             {article.category}
           </Badge>
           <Badge variant="secondary" className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-slate-200">

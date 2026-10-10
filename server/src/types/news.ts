@@ -2,6 +2,7 @@ export enum Category {
   TECH = 'TECH',
   SCIENCE = 'SCIENCE',
   SPORTS = 'SPORTS',
+  CRICKET = 'CRICKET',
   ENTERTAINMENT = 'ENTERTAINMENT',
   BUSINESS = 'BUSINESS'
 }

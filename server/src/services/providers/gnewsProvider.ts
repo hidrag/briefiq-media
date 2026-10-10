@@ -26,6 +26,7 @@ export class GNewsProvider implements NewsProvider {
     [Category.TECH]: 'technology',
     [Category.SCIENCE]: 'science',
     [Category.SPORTS]: 'sports',
+    [Category.CRICKET]: 'sports',
     [Category.ENTERTAINMENT]: 'entertainment',
     [Category.BUSINESS]: 'business'
   };
@@ -33,12 +34,12 @@ export class GNewsProvider implements NewsProvider {
   async fetchByCategory(category: Category): Promise<NormalizedArticle[]> {
     const apiKey = process.env.GNEWS_API_KEY;
     if (!apiKey || apiKey === 'your-gnews-api-key') {
-      console.warn('GNews API key not configured or using default placeholder. Skipping GNewsProvider.');
       return [];
     }
 
     const gnewsCategory = this.categoryMap[category];
-    const url = `https://gnews.io/api/v4/top-headlines?category=${gnewsCategory}&lang=en&apikey=${apiKey}`;
+    const query = category === Category.CRICKET ? '&q=cricket' : '';
+    const url = `https://gnews.io/api/v4/top-headlines?category=${gnewsCategory}${query}&lang=en&apikey=${apiKey}`;
 
     try {
       const response = await fetch(url);
