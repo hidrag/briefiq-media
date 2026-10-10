@@ -22,10 +22,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Security Headers
 app.use(helmet());
 
-// Dynamic CORS Configuration
 const allowedOrigin = process.env.ALLOWED_ORIGIN || 'http://localhost:5173';
 app.use(
   cors({
@@ -42,7 +40,6 @@ app.use(
 
 app.use(express.json());
 
-// Global General Rate Limiter (100 requests per 15 minutes)
 const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -52,7 +49,6 @@ const generalLimiter = rateLimit({
 });
 app.use(generalLimiter);
 
-// Stricter Rate Limiter for AI Summarization Route (15 requests per 15 minutes)
 const aiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 15,
@@ -61,7 +57,6 @@ const aiLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// Mount Routes
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/articles', articleRoutes);
@@ -72,12 +67,16 @@ app.use('/api', aiRoutes);
 app.use('/api', userRoutes);
 app.use('/api', commentRoutes);
 
+// Explicitly initialize cron schedulers
+startNewsCronJob();
+startDigestCronJob();
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 
-  // Non-blocking automatic boot news ingestion
+  // Immediate non-blocking startup news sync
   (async () => {
-    console.log('[BOOT] Triggering automatic news ingestion on startup...');
+    console.log('[BOOT] Triggering automatic startup news sync...');
     try {
       const result = await newsService.syncNews();
       console.log(`[BOOT] Startup news sync completed. Synced: ${result.syncedCount}, Errors: ${result.errorsCount}`);
@@ -85,7 +84,4 @@ app.listen(port, () => {
       console.error('[BOOT] Error during automatic startup news sync:', error);
     }
   })();
-
-  startNewsCronJob();
-  startDigestCronJob();
 });

@@ -1,4 +1,5 @@
 export enum Category {
+  GENERAL = 'GENERAL',
   TECH = 'TECH',
   SCIENCE = 'SCIENCE',
   SPORTS = 'SPORTS',

@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Bookmark, Sparkles, BookOpen, ExternalLink } from 'lucide-react';
+import { Bookmark, Sparkles, BookOpen, ExternalLink, MessageSquare } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import type { Article } from '@/services/api';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
 const CATEGORY_FALLBACKS: Record<string, string> = {
+  GENERAL: 'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80',
   CRICKET: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=600&q=80',
   TECH: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
   SCIENCE: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80',
@@ -39,11 +40,10 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
     ? formatDistanceToNow(new Date(article.publishedAt), { addSuffix: true })
     : 'Recently';
 
-  const badgeVariant = categoryKey === 'CRICKET' ? 'success' : 'default';
+  const isReddit = article.sourceName.toLowerCase().includes('reddit') || article.sourceName.toLowerCase().startsWith('r/');
 
   return (
     <div className="group flex flex-col bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-      {/* Aspect ratio container with Lazy Loading and onError Fallback */}
       <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
         <img
           src={imgSrc}
@@ -57,17 +57,29 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
         />
 
-        {/* Badges */}
         <div className="absolute top-3 left-3 flex items-center gap-2 flex-wrap">
-          <Badge variant={badgeVariant} className={categoryKey === 'CRICKET' ? 'bg-emerald-600 text-white' : 'bg-slate-950/80 backdrop-blur-md text-white border border-white/10'}>
+          <Badge
+            variant="default"
+            className={
+              categoryKey === 'CRICKET'
+                ? 'bg-emerald-600 text-white'
+                : 'bg-slate-950/80 backdrop-blur-md text-white border border-white/10'
+            }
+          >
             {article.category}
           </Badge>
-          <Badge variant="secondary" className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-slate-200">
+          <Badge
+            variant="secondary"
+            className={
+              isReddit
+                ? 'bg-orange-600 text-white font-bold backdrop-blur-md'
+                : 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md text-slate-800 dark:text-slate-200'
+            }
+          >
             {article.sourceName}
           </Badge>
         </div>
 
-        {/* Bookmark Button */}
         <button
           onClick={() => onToggleBookmark?.(article.id)}
           className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-all cursor-pointer ${
@@ -81,7 +93,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
         </button>
       </div>
 
-      {/* Article Content */}
       <div className="flex-1 p-5 flex flex-col justify-between gap-4">
         <div className="space-y-2">
           <span className="text-xs font-medium text-slate-400">{timeAgo}</span>
@@ -95,7 +106,6 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
           )}
         </div>
 
-        {/* Actions */}
         <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center gap-2">
           <Button
             variant="outline"
@@ -117,15 +127,27 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             Read
           </Button>
 
-          <a
-            href={article.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-            title="Open original link"
-          >
-            <ExternalLink className="w-4 h-4" />
-          </a>
+          {isReddit ? (
+            <a
+              href={article.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-orange-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/40 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
+              title="View Reddit Thread"
+            >
+              <MessageSquare className="w-4 h-4" />
+            </a>
+          ) : (
+            <a
+              href={article.sourceUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+              title="Open original link"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </a>
+          )}
         </div>
       </div>
     </div>

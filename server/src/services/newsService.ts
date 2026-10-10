@@ -3,6 +3,7 @@ import { Category, NormalizedArticle } from '../types/news.js';
 import { NewsProvider } from './providers/baseProvider.js';
 import { RSSProvider } from './providers/rssProvider.js';
 import { GNewsProvider } from './providers/gnewsProvider.js';
+import { RedditProvider } from './providers/redditProvider.js';
 
 const prisma = new PrismaClient();
 
@@ -12,7 +13,8 @@ export class NewsService {
   constructor() {
     this.providers = [
       new RSSProvider(),
-      new GNewsProvider()
+      new GNewsProvider(),
+      new RedditProvider(),
     ];
   }
 
@@ -34,7 +36,6 @@ export class NewsService {
         }
       }
 
-      // Deduplicate articles by sourceUrl in memory before database operations
       const articleMap = new Map<string, NormalizedArticle>();
       for (const article of allArticles) {
         if (!article.sourceUrl) continue;
@@ -43,7 +44,6 @@ export class NewsService {
         }
       }
 
-      // Upsert into database
       for (const article of articleMap.values()) {
         try {
           await prisma.article.upsert({
@@ -55,7 +55,7 @@ export class NewsService {
               sourceName: article.sourceName,
               imageUrl: article.imageUrl,
               publishedAt: article.publishedAt,
-              category: article.category
+              category: article.category,
             },
             create: {
               title: article.title,
@@ -65,8 +65,8 @@ export class NewsService {
               sourceName: article.sourceName,
               imageUrl: article.imageUrl,
               publishedAt: article.publishedAt,
-              category: article.category
-            }
+              category: article.category,
+            },
           });
           syncedCount++;
         } catch (error) {
