@@ -1,5 +1,7 @@
 export enum Category {
   GENERAL = 'GENERAL',
+  INDIA = 'INDIA',
+  KOLKATA = 'KOLKATA',
   TECH = 'TECH',
   SCIENCE = 'SCIENCE',
   SPORTS = 'SPORTS',

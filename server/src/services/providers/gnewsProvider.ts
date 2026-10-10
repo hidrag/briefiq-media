@@ -24,6 +24,8 @@ export class GNewsProvider implements NewsProvider {
 
   private categoryMap: Record<Category, string> = {
     [Category.GENERAL]: 'general',
+    [Category.INDIA]: 'general',
+    [Category.KOLKATA]: 'general',
     [Category.TECH]: 'technology',
     [Category.SCIENCE]: 'science',
     [Category.SPORTS]: 'sports',
@@ -39,7 +41,11 @@ export class GNewsProvider implements NewsProvider {
     }
 
     const gnewsCategory = this.categoryMap[category];
-    const query = category === Category.CRICKET ? '&q=cricket' : '';
+    let query = '';
+    if (category === Category.CRICKET) query = '&q=cricket';
+    if (category === Category.INDIA) query = '&q=India';
+    if (category === Category.KOLKATA) query = '&q=Kolkata';
+
     const url = `https://gnews.io/api/v4/top-headlines?category=${gnewsCategory}${query}&lang=en&apikey=${apiKey}`;
 
     try {

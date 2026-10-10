@@ -5,7 +5,8 @@ import { useBookmarks } from '@/services/api';
 
 const CATEGORIES = [
   { id: 'ALL', label: 'All News' },
-  { id: 'GENERAL', label: 'India / General' },
+  { id: 'INDIA', label: 'India 🇮🇳' },
+  { id: 'KOLKATA', label: 'Kolkata 🌉' },
   { id: 'TECH', label: 'Tech' },
   { id: 'SCIENCE', label: 'Science' },
   { id: 'SPORTS', label: 'Sports' },
@@ -83,6 +84,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBookmarks, onOpenRecentlyV
                 activeCategory === cat.id
                   ? cat.id === 'CRICKET'
                     ? 'bg-emerald-600 text-white shadow-sm'
+                    : cat.id === 'KOLKATA' || cat.id === 'INDIA'
+                    ? 'bg-amber-600 text-white shadow-sm'
                     : 'bg-blue-600 text-white shadow-sm'
                   : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-900'
               }`}
