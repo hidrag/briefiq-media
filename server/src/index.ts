@@ -13,6 +13,7 @@ import userRoutes from './routes/user.js';
 import commentRoutes from './routes/comments.js';
 import digestRoutes from './routes/digest.js';
 
+import { newsService } from './services/newsService.js';
 import { startNewsCronJob } from './jobs/newsCron.js';
 import { startDigestCronJob } from './jobs/digestCron.js';
 
@@ -32,10 +33,10 @@ app.use(
       if (!origin || origin === allowedOrigin || allowedOrigin === '*') {
         callback(null, true);
       } else {
-        callback(null, true); // Fallback allow in dev
+        callback(null, true);
       }
     },
-    credentials: true
+    credentials: true,
   })
 );
 
@@ -47,7 +48,7 @@ const generalLimiter = rateLimit({
   max: 100,
   message: { error: 'Too many requests, please try again later.' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
 });
 app.use(generalLimiter);
 
@@ -57,7 +58,7 @@ const aiLimiter = rateLimit({
   max: 15,
   message: { error: 'AI summarization rate limit reached, please wait a few minutes.' },
   standardHeaders: true,
-  legacyHeaders: false
+  legacyHeaders: false,
 });
 
 // Mount Routes
@@ -73,6 +74,18 @@ app.use('/api', commentRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+
+  // Non-blocking automatic boot news ingestion
+  (async () => {
+    console.log('[BOOT] Triggering automatic news ingestion on startup...');
+    try {
+      const result = await newsService.syncNews();
+      console.log(`[BOOT] Startup news sync completed. Synced: ${result.syncedCount}, Errors: ${result.errorsCount}`);
+    } catch (error) {
+      console.error('[BOOT] Error during automatic startup news sync:', error);
+    }
+  })();
+
   startNewsCronJob();
   startDigestCronJob();
 });
