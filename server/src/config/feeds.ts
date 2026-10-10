@@ -5,6 +5,15 @@ export const CATEGORY_FEEDS: Record<Category, string[]> = {
     'https://feeds.feedburner.com/ndtvnews-top-stories',
     'https://www.thehindu.com/news/national/feeder/default.rss',
   ],
+  [Category.INDIA]: [
+    'https://feeds.feedburner.com/ndtvnews-top-stories',
+    'https://www.thehindu.com/news/national/feeder/default.rss',
+    'https://timesofindia.indiatimes.com/rssfeedstopstories.cms',
+  ],
+  [Category.KOLKATA]: [
+    'https://www.thehindu.com/news/cities/kolkata/feeder/default.rss',
+    'https://timesofindia.indiatimes.com/rssfeeds/-2128833038.cms',
+  ],
   [Category.TECH]: [
     'https://feeds.feedburner.com/TechCrunch/',
     'https://www.theverge.com/rss/index.xml',

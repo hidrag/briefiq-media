@@ -6,7 +6,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 
 const CATEGORY_FALLBACKS: Record<string, string> = {
-  GENERAL: 'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80',
+  INDIA: 'https://images.unsplash.com/photo-1532375810709-75b1da00537c?auto=format&fit=crop&w=600&q=80',
+  KOLKATA: 'https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=600&q=80', // Howrah Bridge / Kolkata landmark
   CRICKET: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=600&q=80',
   TECH: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80',
   SCIENCE: 'https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=600&q=80',
@@ -63,6 +64,8 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
             className={
               categoryKey === 'CRICKET'
                 ? 'bg-emerald-600 text-white'
+                : categoryKey === 'KOLKATA' || categoryKey === 'INDIA'
+                ? 'bg-amber-600 text-white'
                 : 'bg-slate-950/80 backdrop-blur-md text-white border border-white/10'
             }
           >
@@ -133,7 +136,7 @@ export const ArticleCard: React.FC<ArticleCardProps> = ({
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-orange-500 hover:text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/40 rounded-lg transition-colors flex items-center gap-1 text-xs font-semibold"
-              title="View Reddit Thread"
+              title="View Reddit Discussion Thread"
             >
               <MessageSquare className="w-4 h-4" />
             </a>
